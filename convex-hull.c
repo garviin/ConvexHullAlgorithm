@@ -18,14 +18,45 @@
 
 #include "convex-hull.h"
 
+#define LEFT 'l'
+#define RIGHT 'r'
+#define COLLINEAR 'c'
+
+int main(){
+  Point a,b,c;
+  a.y = 0;
+  a.x = 0;
+
+  b.x = 1;
+  b.y = 1;
+
+  c.y = -100;
+  c.x = 0;
+
+  orientation(a,b,c);
+}
+
 // Returns the orientation of Point p2 in relation to the line segment p0p1.
 // If p2 is to the left of p0p1 then it returns LEFT ('l'), if p2 is to the
 // right it returns RIGHT ('r').
 // If p0, p1 and p2 are collinear then COLLINEAR ('c') is returned.
 char orientation(Point p0, Point p1, Point p2) {
-  // TODO: Implement orientation()
-  fprintf(stderr, "Error: orientation() not implemented\n");
-  exit(EXIT_FAILURE);
+  // initialize coefficients of line passing through point p0 and p1
+  int a = (p1.y - p0.y);
+  int b = (p0.x -  p1.x);
+  int c = (p0.x*p1.y) - (p0.y*p1.x);
+
+  // plugging p2 into the line equation
+  int anto = (a*p2.x) + (b*p2.y) - c;
+
+  // value of anto determines which side p2 is on
+  if (anto == 0){
+    return COLLINEAR;
+  } else if(anto > 0){
+    return RIGHT;
+  } else{
+    return LEFT;
+  }
 }
 
 // Takes a polygon (i.e. an array of points) given in counter-clockwise order

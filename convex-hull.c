@@ -22,20 +22,6 @@
 #define RIGHT 'r'
 #define COLLINEAR 'c'
 
-int main(){
-  Point a,b,c;
-  a.y = 0;
-  a.x = 0;
-
-  b.x = 1;
-  b.y = 1;
-
-  c.y = -100;
-  c.x = 0;
-
-  orientation(a,b,c);
-}
-
 // Returns the orientation of Point p2 in relation to the line segment p0p1.
 // If p2 is to the left of p0p1 then it returns LEFT ('l'), if p2 is to the
 // right it returns RIGHT ('r').

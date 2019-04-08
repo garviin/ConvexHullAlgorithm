@@ -25,28 +25,60 @@
 #include "deque.h"
 #include "point.h"
 
+
+
+struct node{
+  Node *prev;
+  Node *next;
+  Point *point;
+};
+
 // TODO: Fill in this struct definition, or change the typedef in deque.h
 struct deque {
-  // TODO: Add fields here
+  Node *top;
+  Node *bottom;
+  int size;
 };
 
 // Create a new empty Deque and return a pointer to it
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Deque *new_deque() {
-  // TODO: Implement new_deque()
-  fprintf(stderr, "Error: new_deque() not implemented\n");
-  exit(EXIT_FAILURE);
+  Deque *new_deque = malloc(sizeof(Deque));
+  assert(new_deque);
+
+  new_deque->top = NULL;
+  new_deque->bottom = NULL;
+  new_deque->size = 0;
+
+  return new_deque;
 }
 
+Node *new_node() {
+	Node *new_node = malloc(sizeof(Node));
+	assert(new_node);
+	
+	return new_node;
+}
 
 // Free the memory associated with a Deque
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void free_deque(Deque *deque) {
-  // TODO: Implement free_deque()
-  fprintf(stderr, "Error: free_deque() not implemented\n");
-  exit(EXIT_FAILURE);
+  assert(deque != NULL);
+
+  Node *current_node = deque->top;
+  Node *next_node;
+  while(current_node){
+    next_node = current_node->next;
+    free_node(current_node);
+  }
+
+  free(deque);
+}
+
+void free_node(Node *node) {
+	free(node);
 }
 
 // Add a Point to the top of a Deque

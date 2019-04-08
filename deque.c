@@ -55,13 +55,6 @@ Deque *new_deque() {
   return new_deque;
 }
 
-Node *new_node() {
-	Node *new_node = malloc(sizeof(Node));
-	assert(new_node);
-	
-	return new_node;
-}
-
 // Free the memory associated with a Deque
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
@@ -76,10 +69,6 @@ void free_deque(Deque *deque) {
   }
 
   free(deque);
-}
-
-void free_node(Node *node) {
-	free(node);
 }
 
 // Add a Point to the top of a Deque
@@ -147,10 +136,23 @@ void deque_insert(Deque *deque, Point data) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_pop(Deque *deque) {
+// Check if input is valid
+  assert(deque);
+  assert(deque->size > 0);
 
-  // TODO: Implement deque_pop()
-  fprintf(stderr, "Error: deque_pop() not implemented\n");
-  exit(EXIT_FAILURE);
+  Node *top_node = deque->top;
+  Point data = top_node->point;
+  deque->top = top_node->prev;
+
+  if(deque->size == 1){
+    deque->bottom = NULL;
+  }
+
+  deque->size--;
+
+  free(top_node);
+
+  return data;
 }
 
 // Remove and return the bottom Point from a Deque
@@ -160,6 +162,23 @@ Point deque_pop(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_remove(Deque *deque) {
+  // Check if input is valid
+  assert(deque);
+  assert(deque->size > 0);
+
+  Node *bottom_node = deque->bottom;
+  Point data = bottom_node->point;
+  deque->bottom = bottom_node->next;
+
+  if(deque->size == 1){
+    deque->top = NULL;
+  }
+
+  deque->size--;
+
+  free(bottom_node);
+
+  return data;
 }
 
 // Return the number of Points in a Deque
@@ -169,9 +188,22 @@ Point deque_remove(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 int deque_size(Deque *deque) {
-  // TODO: Implement deque_size()
-  fprintf(stderr, "Error: deque_size() not implemented\n");
-  exit(EXIT_FAILURE);
+  assert(deque);
+  
+  return deque->size;
 }
 
 // TODO: Add any other functions you might need for your Deque module
+
+// HELPER FUNCTIONS
+
+void free_node(Node *node) {
+	free(node);
+}
+
+Node *new_node() {
+	Node *new_node = malloc(sizeof(Node));
+	assert(new_node);
+	
+	return new_node;
+}

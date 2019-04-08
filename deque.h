@@ -20,6 +20,9 @@
 // You may change the definition of Deque but DO NOT change the name
 typedef struct deque Deque;
 
+// Definition of a Node;
+typedef struct node Node;
+
 // Create a new empty Deque and return a pointer to it
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
@@ -29,6 +32,7 @@ Deque *new_deque();
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void free_deque(Deque *deque);
+
 
 // Add a Point to the top of a Deque
 //
@@ -71,5 +75,11 @@ Point deque_remove(Deque *deque);
 int deque_size(Deque *deque);
 
 // TODO: Add any other functions you might need for your Deque module
+
+// Free the memory associated with a Node
+void free_node(Node *node);
+
+// Creates a new node
+Node *new_node();
 
 #endif

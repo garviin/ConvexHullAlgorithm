@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "deque.h"
 #include "point.h"
@@ -30,7 +31,7 @@
 struct node{
   Node *prev;
   Node *next;
-  Point *point;
+  Point point;
 };
 
 // TODO: Fill in this struct definition, or change the typedef in deque.h
@@ -88,9 +89,26 @@ void free_node(Node *node) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_push(Deque *deque, Point data) {
-  // TODO: Implement deque_push()
-  fprintf(stderr, "Error: deque_push() not implemented\n");
-  exit(EXIT_FAILURE);
+  assert(deque);
+
+  // Create new node to push in the top deque
+  Node *node = new_node();
+  
+  // Assign node data to the input data
+  node->point = data;
+
+  // Update node pointers
+  node->next = NULL;
+  node->prev = deque->top;
+  
+  // Update deque pointers
+  deque->top = node;
+  if(deque->size == 0){
+    deque->bottom = node;
+  }
+
+  // Update list size
+  deque->size++;
 }
 
 // Add a Point to the bottom of a Deque
@@ -100,9 +118,26 @@ void deque_push(Deque *deque, Point data) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_insert(Deque *deque, Point data) {
-  // TODO: Implement deque_insert()
-  fprintf(stderr, "Error: deque_insert() not implemented\n");
-  exit(EXIT_FAILURE);
+  assert(deque);
+
+  // Create new node to insert in the bottom of deque
+  Node *node = new_node();
+  
+  // Assign node data to the input data
+  node->point = data;
+
+  // Update node pointers
+  node->next = deque->bottom;
+  node->prev = NULL;
+
+  // Update deque top and bottom
+  deque->bottom = node;
+  if(deque->size == 0){
+    deque->top = node;
+  }
+
+  // Update list size
+  deque->size++;
 }
 
 // Remove and return the top Point from a Deque
@@ -112,6 +147,7 @@ void deque_insert(Deque *deque, Point data) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_pop(Deque *deque) {
+
   // TODO: Implement deque_pop()
   fprintf(stderr, "Error: deque_pop() not implemented\n");
   exit(EXIT_FAILURE);
@@ -124,9 +160,6 @@ Point deque_pop(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_remove(Deque *deque) {
-  // TODO: Implement deque_remove()
-  fprintf(stderr, "Error: deque_remove() not implemented\n");
-  exit(EXIT_FAILURE);
 }
 
 // Return the number of Points in a Deque

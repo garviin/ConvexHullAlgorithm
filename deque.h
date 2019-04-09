@@ -23,6 +23,19 @@ typedef struct deque Deque;
 // Definition of a Node;
 typedef struct node Node;
 
+struct node{
+  Node *prev;
+  Node *next;
+  Point point;
+};
+
+// TODO: Fill in this struct definition, or change the typedef in deque.h
+struct deque {
+  Node *top;
+  Node *bottom;
+  int size;
+};
+
 // Create a new empty Deque and return a pointer to it
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
@@ -81,5 +94,9 @@ void free_node(Node *node);
 
 // Creates a new node
 Node *new_node();
+
+Node *top_node();
+
+Node *bottom_node();
 
 #endif

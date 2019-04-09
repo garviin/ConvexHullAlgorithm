@@ -16,6 +16,7 @@
 #define CONVEX_HULL_H
 
 #include "point.h"
+#include "deque.h"
 
 // Possible results from the inside_hull() algorithm
 #define INSIDE_HULL_ERROR -1

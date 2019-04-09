@@ -26,21 +26,6 @@
 #include "deque.h"
 #include "point.h"
 
-
-
-struct node{
-  Node *prev;
-  Node *next;
-  Point point;
-};
-
-// TODO: Fill in this struct definition, or change the typedef in deque.h
-struct deque {
-  Node *top;
-  Node *bottom;
-  int size;
-};
-
 // Create a new empty Deque and return a pointer to it
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
@@ -61,11 +46,12 @@ Deque *new_deque() {
 void free_deque(Deque *deque) {
   assert(deque != NULL);
 
-  Node *current_node = deque->top;
+  Node *current_node = deque->bottom;
   Node *next_node;
   while(current_node){
     next_node = current_node->next;
     free_node(current_node);
+    current_node = next_node;
   }
 
   free(deque);
@@ -78,7 +64,7 @@ void free_deque(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_push(Deque *deque, Point data) {
-  assert(deque);
+  assert(deque != NULL);
 
   // Create new node to push in the top deque
   Node *node = new_node();
@@ -89,8 +75,12 @@ void deque_push(Deque *deque, Point data) {
   // Update node pointers
   node->next = NULL;
   node->prev = deque->top;
-  
-  // Update deque pointers
+
+  // Update old top node
+  if(deque->size > 0){
+    deque->top->next = node;
+  }
+
   deque->top = node;
   if(deque->size == 0){
     deque->bottom = node;
@@ -107,7 +97,7 @@ void deque_push(Deque *deque, Point data) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_insert(Deque *deque, Point data) {
-  assert(deque);
+  assert(deque != NULL);
 
   // Create new node to insert in the bottom of deque
   Node *node = new_node();
@@ -119,6 +109,11 @@ void deque_insert(Deque *deque, Point data) {
   node->next = deque->bottom;
   node->prev = NULL;
 
+  // Update old bottom node
+  if(deque->size > 0){
+    deque->bottom->prev = node;
+  }
+  
   // Update deque top and bottom
   deque->bottom = node;
   if(deque->size == 0){
@@ -137,12 +132,19 @@ void deque_insert(Deque *deque, Point data) {
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_pop(Deque *deque) {
 // Check if input is valid
-  assert(deque);
+  assert(deque != NULL);
   assert(deque->size > 0);
 
   Node *top_node = deque->top;
   Point data = top_node->point;
-  deque->top = top_node->prev;
+  
+
+  if (deque->size > 1){
+    deque->top = top_node->prev;
+    deque->top->next = NULL;
+  } else{
+    deque->top = NULL;
+  }
 
   if(deque->size == 1){
     deque->bottom = NULL;
@@ -163,12 +165,19 @@ Point deque_pop(Deque *deque) {
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Point deque_remove(Deque *deque) {
   // Check if input is valid
-  assert(deque);
+  assert(deque != NULL);
   assert(deque->size > 0);
 
   Node *bottom_node = deque->bottom;
   Point data = bottom_node->point;
-  deque->bottom = bottom_node->next;
+  
+  
+  if (deque->size > 1){
+    deque->bottom = bottom_node->next;
+    deque->bottom->prev = NULL;
+  } else {
+    deque->bottom = NULL;
+  }
 
   if(deque->size == 1){
     deque->top = NULL;
@@ -188,7 +197,7 @@ Point deque_remove(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 int deque_size(Deque *deque) {
-  assert(deque);
+  assert(deque != NULL);
   
   return deque->size;
 }
@@ -206,4 +215,12 @@ Node *new_node() {
 	assert(new_node);
 	
 	return new_node;
+}
+
+Node *top_node(Deque *deque){
+  return deque->top;
+}
+
+Node *bottom_node(Deque *deque){
+  return deque->bottom;
 }

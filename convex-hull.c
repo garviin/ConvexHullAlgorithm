@@ -15,8 +15,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "convex-hull.h"
+#include "deque.h"
 
 #define LEFT 'l'
 #define RIGHT 'r'
@@ -57,7 +59,50 @@ char orientation(Point p0, Point p1, Point p2) {
 //
 // If an error occurs this function should return INSIDE_HULL_ERROR.
 int inside_hull(Point *polygon, int n, Point *hull) {
-  // TODO: Implement the InsideHull algorithm
-  fprintf(stderr, "Error: inside_hull() not implemented\n");
-  exit(EXIT_FAILURE);
+  // Check if inputs are valid
+  if (polygon == NULL || hull == NULL || n < 3){
+    exit(INSIDE_HULL_ERROR);
+  }
+
+  Deque *points = new_deque();
+  char orientation_anto = orientation(polygon[0], polygon[1], polygon[2]);
+  
+  int i = 0;
+  if(orientation_anto == LEFT){
+    for(i = 0; i < 3; i++){
+      deque_push(points, polygon[i]);
+    }
+    deque_insert(points,polygon[2]);
+  } else{
+    for(i = 0; i < 3; i++){
+      deque_insert(points, polygon[i]);
+    }
+    deque_push(points, polygon[2]);
+  }
+
+  while(i < n){
+
+    if ((orientation(points->top->prev->point, points->top->point, polygon[i]) == LEFT) && 
+    (orientation(points->bottom->point, points->bottom->next->point, polygon[i]) == LEFT)){
+      i++;
+      continue;
+    }
+
+    while(orientation(points->top->prev->point, points->top->point, polygon[i]) == RIGHT){
+      deque_pop(points);
+    }
+
+    deque_push(points, polygon[i]);
+    while(orientation(points->bottom->point, points->bottom->next->point, polygon[i]) == RIGHT){
+      deque_remove(points);
+    }
+
+    deque_insert(points, polygon[i]);
+
+    i++;
+  }
+  for (int i = 0; i < deque_size(points) - 1; i++){
+    hull[i] = deque_remove(points);
+  }
+  return deque_size(points) - 1;
 }

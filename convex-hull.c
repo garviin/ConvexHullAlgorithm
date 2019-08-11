@@ -25,14 +25,14 @@
 // right it returns RIGHT ('r').
 // If p0, p1 and p2 are collinear then COLLINEAR ('c') is returned.
 char orientation(Point p0, Point p1, Point p2) {
-  // initialize coefficients of line passing through point p0 and p1
+  // Create vectors a and b
   Point a =new_point(p1.x-p0.x,p1.y-p0.y);
   Point b =new_point(p2.x-p0.x,p2.y-p0.y);
 
-  double cross = (a.x * b.y) - (a.y * b.x);
-  // plugging p2 into the line equation
+  // Find the cross product of a and b
+  float cross = (a.x * b.y) - (a.y * b.x);
 
-  // value of anto determines which side p2 is on
+  // Value of cross product determines which side p2 is on
   if (cross == 0){
     return COLLINEAR;
   } else if(cross < 0){
@@ -55,64 +55,95 @@ char orientation(Point p0, Point p1, Point p2) {
 // If an error occurs this function should return INSIDE_HULL_ERROR.
 int inside_hull(Point *polygon, int n, Point *hull) {
   // Check if inputs are valid
-  if (polygon == NULL || hull == NULL || n < 3){
+  if (polygon == NULL || hull == NULL || n < INITIAL_POINTS){
     exit(INSIDE_HULL_ERROR);
   }
 
+  // Make a new deque to store convex hull points
   Deque *points = new_deque();
-  char orientation_anto = orientation(polygon[0], polygon[1], polygon[2]);
+
+  // Char variable to store orientation of initial points
+  char orientation_init = orientation(polygon[POINT_ZERO], polygon[POINT_ONE], polygon[POINT_TWO]);
   
   int i = 0;
-  if(orientation_anto == LEFT){
-    for(i = 0; i < 3; i++){
+  if(orientation_init == LEFT){
+    // Deque = {p2, p1, p0, p2}
+    for(i = 0; i < INITIAL_POINTS; i++){
       deque_push(points, polygon[i]);
     }
-    deque_insert(points,polygon[2]);
+    deque_insert(points,polygon[POINT_TWO]);
   } else{
-    for(i = 0; i < 3; i++){
+    // Deque = {p2, p0, p1, p2}
+    for(i = 0; i < INITIAL_POINTS; i++){
       deque_insert(points, polygon[i]);
     }
-    deque_push(points, polygon[2]);
+    deque_push(points, polygon[POINT_TWO]);
   }
 
+  // Loop to find convex hull points and remove non convex hulls
+  // i = 3
   while(i < n){
-    if(orientation(points->top->prev->point, points->top->point, polygon[i]) == COLLINEAR){
+    // If 3 consecutive points are collinear, exit and return COLLINEAR_POINTS
+    if(top_orientation(points, polygon, i) == COLLINEAR){
       free(points);
       exit(COLLINEAR_POINTS);
     }
-    if ((orientation(points->top->prev->point, points->top->point, polygon[i]) == LEFT) && 
-    (orientation(points->bottom->point, points->bottom->next->point, polygon[i]) == LEFT)){
+
+    // Checking the validity of the existing points in the deque
+    if ((top_orientation(points, polygon, i) == LEFT) && 
+        (bottom_orientation(points, polygon, i) == LEFT)){
       i++;
       continue;
     }
 
-    while(orientation(points->top->prev->point, points->top->point, polygon[i]) == RIGHT){
+    // Checking top two points to the ith point of the polygon
+    while(top_orientation(points, polygon, i) == RIGHT){
       deque_pop(points);
     }
 
+    // Checking bottom two points to the ith point of the polygon
     deque_push(points, polygon[i]);
-    while(orientation(points->bottom->point, points->bottom->next->point, polygon[i]) == RIGHT){
+    while(bottom_orientation(points, polygon, i) == RIGHT){
       deque_remove(points);
     }
 
+    // Insert next convex point
     deque_insert(points, polygon[i]);
 
+    // Move on to the next point
     i++;
   }
 
-  Node *current_node = points->bottom;
-  Node *end_node = points->top;
-  int z = 0;
-  if(current_node->point.x == end_node->point.x ||
-  current_node->point.y == end_node->point.y){
+  // If equal, then remove end point to avoid duplicate
+  if(points->bottom->point.x == points->top->point.x &&
+  points->bottom->point.y == points->top->point.y){
     deque_pop(points);
   }
+
+  // Index for hull array and counter for convex hull points
+  int hull_count = 0;
+  Node *current_node = points->bottom;
+
+  // Loop assigns convex hull points in deque to hull array
   while(current_node != NULL){
-    hull[z] = current_node->point;
+    hull[hull_count] = current_node->point;
     current_node = current_node->next;
-    z++;
+    hull_count++;
   }
 
+  // Free memory
   free(points);
-  return z;
+
+  // Return number of points in convex hull
+  return hull_count;
+}
+
+// Returns the orientation of the indexed point in respect to the top two points in the deque
+char top_orientation(Deque *points, Point *polygon, int index){
+  return orientation(points->top->prev->point, points->top->point, polygon[index]);
+}
+
+// Returns the orientation of the indexed point in respect to the bottom two points in the deque
+char bottom_orientation(Deque *points, Point *polygon, int index){
+  return orientation(points->bottom->point, points->bottom->next->point, polygon[index]);
 }

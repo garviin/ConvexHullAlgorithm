@@ -20,12 +20,12 @@
 // You may change the definition of Deque but DO NOT change the name
 typedef struct deque Deque;
 
-// Definition of a Node;
+// Definition of the doubly linked node;
 typedef struct node Node;
-
 struct node{
   Node *prev;
   Node *next;
+  // Point it stores
   Point point;
 };
 
@@ -94,9 +94,5 @@ void free_node(Node *node);
 
 // Creates a new node
 Node *new_node();
-
-Node *top_node();
-
-Node *bottom_node();
 
 #endif

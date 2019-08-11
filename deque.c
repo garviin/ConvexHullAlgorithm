@@ -30,13 +30,18 @@
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 Deque *new_deque() {
+  // Creates memory for the deque
   Deque *new_deque = malloc(sizeof(Deque));
+
+  // Checks if deque is valid
   assert(new_deque);
 
+  // Intialize top/bottom pointers and size of deque
   new_deque->top = NULL;
   new_deque->bottom = NULL;
   new_deque->size = 0;
 
+  // Returns pointer to the new deque
   return new_deque;
 }
 
@@ -44,8 +49,10 @@ Deque *new_deque() {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void free_deque(Deque *deque) {
+  // Checks if input is valid
   assert(deque != NULL);
 
+  // Traverses deque from the bottom and frees each node
   Node *current_node = deque->bottom;
   Node *next_node;
   while(current_node){
@@ -54,6 +61,7 @@ void free_deque(Deque *deque) {
     current_node = next_node;
   }
 
+  // Frees the deque itself
   free(deque);
 }
 
@@ -64,6 +72,7 @@ void free_deque(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_push(Deque *deque, Point data) {
+  // Checks if input is valid
   assert(deque != NULL);
 
   // Create new node to push in the top deque
@@ -81,6 +90,7 @@ void deque_push(Deque *deque, Point data) {
     deque->top->next = node;
   }
 
+  // Update the deque top and bottom nodes
   deque->top = node;
   if(deque->size == 0){
     deque->bottom = node;
@@ -97,6 +107,7 @@ void deque_push(Deque *deque, Point data) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 void deque_insert(Deque *deque, Point data) {
+  // Check if input is valid
   assert(deque != NULL);
 
   // Create new node to insert in the bottom of deque
@@ -130,30 +141,33 @@ void deque_insert(Deque *deque, Point data) {
 // Runtime: ...
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
-Point deque_pop(Deque *deque) {
-// Check if input is valid
+Point deque_pop(Deque *deque) { 
+  // Check if input is valid
   assert(deque != NULL);
   assert(deque->size > 0);
 
+  // Stores top node pointer and its data for later use
   Node *top_node = deque->top;
   Point data = top_node->point;
   
-
+  // Check if deque will be empty after removing the node
   if (deque->size > 1){
+    // Update new top node of the deque
     deque->top = top_node->prev;
     deque->top->next = NULL;
   } else{
+     // If it will be, no points remain
     deque->top = NULL;
-  }
-
-  if(deque->size == 1){
     deque->bottom = NULL;
   }
 
+  // Update the size of the deque
   deque->size--;
 
+  // Free the memory
   free(top_node);
 
+  // Return value of the popped node
   return data;
 }
 
@@ -168,25 +182,28 @@ Point deque_remove(Deque *deque) {
   assert(deque != NULL);
   assert(deque->size > 0);
 
+  // Stores bottom node pointer and its data for later use
   Node *bottom_node = deque->bottom;
   Point data = bottom_node->point;
   
-  
+  // Check if deque will be empty after removing the node
   if (deque->size > 1){
+    // Update new bottom node of the deque
     deque->bottom = bottom_node->next;
     deque->bottom->prev = NULL;
   } else {
+    // If it will be, no points remain
     deque->bottom = NULL;
-  }
-
-  if(deque->size == 1){
     deque->top = NULL;
   }
-
+  
+  // Update the size of the deque
   deque->size--;
 
+  // Free memory
   free(bottom_node);
 
+  // Return the value of the removed node
   return data;
 }
 
@@ -197,8 +214,10 @@ Point deque_remove(Deque *deque) {
 //
 // DO NOT CHANGE THIS FUNCTION SIGNATURE
 int deque_size(Deque *deque) {
+  // Check if input is valid
   assert(deque != NULL);
-  
+
+  // Return the number of nodes in the deque
   return deque->size;
 }
 
@@ -206,21 +225,15 @@ int deque_size(Deque *deque) {
 
 // HELPER FUNCTIONS
 
+// Frees up memory associated with the node
 void free_node(Node *node) {
 	free(node);
 }
 
+// Creates a new node
 Node *new_node() {
 	Node *new_node = malloc(sizeof(Node));
 	assert(new_node);
 	
 	return new_node;
-}
-
-Node *top_node(Deque *deque){
-  return deque->top;
-}
-
-Node *bottom_node(Deque *deque){
-  return deque->bottom;
 }

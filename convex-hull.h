@@ -27,6 +27,12 @@
 #define RIGHT 'r'
 #define COLLINEAR 'c'
 
+// Constants to initialize the deque hull
+#define INITIAL_POINTS 3
+#define POINT_ZERO 0
+#define POINT_ONE 1
+#define POINT_TWO 2
+
 // Returns the orientation of Point p2 in relation to the line segment p0p1.
 // If p2 is to the left of p0p1 then it returns LEFT ('l'), if p2 is to the
 // right it returns RIGHT ('r').
@@ -45,5 +51,13 @@ char orientation(Point p0, Point p1, Point p2);
 //
 // If an error occurs this function should return INSIDE_HULL_ERROR.
 int inside_hull(Point *polygon, int n, Point *hull);
+
+// Helper functions
+
+// Returns the orientation of the indexed point in respect to the top two points in the deque
+char top_orientation(Deque *points, Point *polygon, int index);
+
+// Returns the orientation of the indexed point in respect to the bottom two points in the deque
+char bottom_orientation(Deque *points, Point *polygon, int index);
 
 #endif
